@@ -1,7 +1,7 @@
 ---
 name: loop-designer
 description: Autonomous agent loop design in 10 steps.
-version: 0.5.1
+version: 0.5.2
 metadata:
   hermes:
     tags: [Loop Design, Goal Judge, Profiles, Cron, Autonomous Agents]
@@ -20,6 +20,14 @@ This is NOT about better prompting. It does NOT cover model selection, fine-tuni
 - You want the system to remember past runs and improve over time
 - You need to build a fail-safe autonomous loop
 - You are debugging why your automated agent stops improving after initial gains
+
+## When Not to Use
+
+- **The task takes under 5 minutes and runs less than weekly.** The setup cost of a dedicated profile, goal_judge wiring, state log, and cron job exceeds the manual effort for months or years. A simple cron job or calendar reminder is a better fit.
+- **The task requires irreversible production writes without a human gate.** Deployments, database migrations, and user-facing content changes must have a human approval step. The loop can prepare and verify, but should not execute alone.
+- **The task's environment changes faster than the loop's value compounds.** If the target (dashboard, API, website) changes layout or contract weekly, the loop spends more time debugging failures than the manual task would take. The compounding benefit of memory and skills only helps when the environment is stable enough for lessons to accumulate.
+- **You can't define a clear "done" condition.** Without a goal_judge verdict or measurable acceptance criteria, the loop has no way to know when to stop. Loops without a stop condition drift into token-wasting oscillation.
+- **You're building it to learn loop design, not to solve a problem.** That's valid — build a throwaway loop on a synthetic task first. The Verification section spells out what graduating looks like.
 
 ## Prerequisites
 
@@ -70,7 +78,15 @@ Add subgoals for multi-condition loops with `/subgoal`.
 
 The harness is the environment the agent boots into. In Hermes, that is a **profile**: a dedicated directory at `~/.hermes/profiles/<name>/` with:
 
-Build one before the loop touches any real work:
+Build one before the loop touches any real work. Create it with:
+
+```
+hermes profile create <name>
+```
+
+Replace `<name>` with a short identifier for the loop's purpose (e.g., `nightly-build`, `scraper-loop`, `code-review`). This creates the profile directory at `~/.hermes/profiles/<name>/` with a starter `profile.yaml`.
+
+Then populate it with the loop's specific configuration:
 
 ```
 profile.yaml          # description, model override, allowed toolsets
@@ -175,6 +191,8 @@ cronjob(
 ```
 
 The cron seeds the kanban with a goal card. The dispatcher's 60s tick handles the rest -- picks up the card, decomposes it into work items, promotes through lanes, and runs worker agents. The cron starts the cycle; the kanban executes it. This IS the article's "timer turns a run into a habit."
+
+The `profile` parameter routes the cron job to run under that profile's config, credentials, and tool restrictions — so the loop inherits the hardened environment you built in Step 2.
 
 Key parameters specific to loop cadence:
 - `profile`: runs the loop under the dedicated profile (Step 2)
