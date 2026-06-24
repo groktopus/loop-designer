@@ -1,7 +1,7 @@
 ---
 name: loop-designer
 description: Autonomous agent loop design in 10 steps.
-version: 0.5.2
+version: 0.5.3
 metadata:
   hermes:
     tags: [Loop Design, Goal Judge, Profiles, Cron, Autonomous Agents]
@@ -42,6 +42,14 @@ This is NOT about better prompting. It does NOT cover model selection, fine-tuni
 ## How to Run
 
 Work through the tiers sequentially. Each step in the Procedure translates one of the article's 10 moves into a concrete Hermes configuration or tool invocation. The canonical output is a profile-bound cron job with goal_judge as the grader and a skill-update lifecycle.
+
+**Syntax key:** This skill uses three notations for Hermes operations. Know which is which — trying to run one as the other will fail.
+
+| Notation | Means | Example |
+|----------|-------|---------|
+| `/command` | Slash command — type during an interactive Hermes session | `/goal All tests pass` |
+| `tool_name(...)` | Hermes tool call — available to the agent, not typed directly | `cronjob(action="create", ...)` |
+| YAML/plain code block | Configuration file content or pseudo-code showing structure | A `profile.yaml` block or a kanban card layout |
 
 ## Quick Reference
 
@@ -204,6 +212,30 @@ Key parameters specific to loop cadence:
 Three Hermes-native shapes cover the article's workflow patterns:
 
 **Fan out and synthesize** -- parallel subagents via delegate_task batch, or seed a kanban board with multiple independent cards that the dispatcher runs concurrently:
+
+To create a kanban board and seed it with cards, use the kanban tool:
+
+```
+kanban(
+    action="board_create",
+    name="build-fixes",
+    goal="Fix the failing tests found in the nightly run."
+)
+kanban(
+    action="card_create",
+    board="build-fixes",
+    goal="Fix test_a: resolve the auth mock isolation issue.",
+    assignee="worker-1"
+)
+kanban(
+    action="card_create",
+    board="build-fixes",
+    goal="Fix test_b: correct the rate limit env var check.",
+    assignee="worker-2"
+)
+```
+
+The dispatcher (60s tick) picks up ready cards and runs them. Cards with no dependency run in parallel.
 
 ```
 kanban_board: 'build-fixes'
