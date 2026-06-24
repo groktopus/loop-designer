@@ -1,7 +1,7 @@
 ---
 name: loop-designer
 description: Autonomous agent loop design in 10 steps.
-version: 0.5.3
+version: 0.5.4
 metadata:
   hermes:
     tags: [Loop Design, Goal Judge, Profiles, Cron, Autonomous Agents]
@@ -162,6 +162,17 @@ cronjob(repeat=10)  # hard stop after 10 iterations no matter what goal_judge sa
 The article's mistake is "no stop condition." goal_judge is one stop. `repeat` is the other. Both are needed because goal_judge is a model and can be wrong. The repeat cap is the physical guarantee.
 
 **Kanban as the goal decomposition engine.** A monolithic goal works for simple pass/fail loops. For complex goals that decompose into parallel work items, seed the kanban board instead. The kanban dispatcher (60s tick) breaks the goal into cards with per-card acceptance criteria, promotes them through ready/in-progress/done lanes autonomously, and the kanban worker agents execute the cards as they become ready. The dispatcher handles fan-out by card dependency -- cards that are independent run in parallel, cards that depend on each other wait for their parent. This IS the article's "system that operates itself" at the task level, not just the loop level.
+
+**Choosing between patterns.** The skill describes four composition mechanisms. Use this table to pick the right one:
+
+| If your loop has... | Use... | Because... |
+|---|---|---|
+| One task, no parallelism | `/goal` + `goal_judge` | Monolithic goal is sufficient; kanban adds overhead with no benefit |
+| One task with sequential sub-steps | `/goal` + `/subgoal` + `goal_judge` | Decomposition without parallelism infrastructure |
+| Multiple independent tasks | Kanban board + dispatcher | Fan-out parallelism via independent card dependency graph |
+| Maker/checker verification needed | `delegate_task` with verifier subagent | Separate profile, independent context, no self-grading |
+
+Don't reach for kanban for a single-task loop — `/goal` handles it natively. Don't use `delegate_task` for fan-out that doesn't need verification — kanban is lighter and the dispatcher handles scheduling autonomously.
 
 **5. Split the maker from the checker.**
 
