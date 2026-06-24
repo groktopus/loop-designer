@@ -1,7 +1,7 @@
 ---
 name: loop-designer
 description: Autonomous agent loop design in 10 steps.
-version: 0.5.0
+version: 0.5.1
 metadata:
   hermes:
     tags: [Loop Design, Goal Judge, Profiles, Cron, Autonomous Agents]
@@ -9,7 +9,7 @@ metadata:
 
 # From Prompter to Loop Designer
 
-A loop designer builds a system that prompts itself -- runs on a timer, checks its own work against a goal, spawns helpers when needed, and writes down what it learned so the next run starts smarter. This skill distills Alex (@de1lymoon)'s 10-step roadmap into concrete Hermes Agent invocations.
+A loop designer builds a system that prompts itself -- runs on a timer, checks its own work against a goal, spawns helpers when needed, and writes down what it learned so the next run starts smarter. This skill distills Alex (@de1lymoon)'s [10-step roadmap](https://x.com/de1lymoon/status/2069726411724673077) into concrete Hermes Agent invocations.
 
 This is NOT about better prompting. It does NOT cover model selection, fine-tuning, or prompt engineering. The model stays the same throughout -- what improves is the Hermes infrastructure wrapped around it.
 
@@ -263,6 +263,8 @@ skill_manage(
 ```
 
 This is the patch-on-fail lifecycle. Every time the loop encounters the same wall, the skill gets sharper. Run-level state goes in the state file; general lessons graduate into skills.
+
+**Graduation threshold:** After 3 consecutive failures for the same issue (same goal, same queue item, or same failure mode), treat it as a repeat failure and call `skill_manage(action="patch")` to document the fix. The first two occurrences go to the state log as lessons; the third triggers a skill patch. This prevents over-patching on one-off failures while ensuring systematic issues get hardened.
 
 The `curator` cron (if enabled) runs nightly and can identify skills that need updating from session patterns, but the primary mechanism is the loop patching itself after each block.
 
