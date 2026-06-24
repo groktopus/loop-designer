@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Hermes Agent Documentation
+    url: https://hermes-agent.nousresearch.com/docs/
+    about: Refer to the Hermes Agent docs for platform-level questions.
