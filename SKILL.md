@@ -1,7 +1,7 @@
 ---
 name: loop-designer
 description: Autonomous agent loop design in 10 steps.
-version: 0.5.4
+version: 0.1.0
 metadata:
   hermes:
     tags: [Loop Design, Goal Judge, Profiles, Cron, Autonomous Agents]
