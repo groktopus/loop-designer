@@ -30,9 +30,23 @@ This is NOT about better prompting or model selection. The model stays the same 
 - Kanban dispatcher, cronjob, skill_manage, and memory tools
 - A dedicated Hermes profile for running the loop
 
+## Installation
+
+Clone the repo into your Hermes skills directory:
+
+```bash
+git clone https://github.com/groktopus/loop-designer.git ~/.hermes/skills/thinking/loop-designer
+```
+
+Verify it's installed:
+
+```bash
+hermes skills list | grep loop-designer
+```
+
 ## Quick start
 
-Load the skill in any Droid session:
+Load the skill in any session:
 
 ```bash
 skill_view(name="loop-designer")
