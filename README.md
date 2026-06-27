@@ -46,11 +46,13 @@ hermes skills list | grep loop-designer
 
 ## Quick start
 
-Load the skill in any session:
+Once installed, load the skill with the slash command:
 
-```bash
-skill_view(name="loop-designer")
 ```
+/loop-designer
+```
+
+Or reference it naturally in conversation — Hermes discovers and loads skills automatically when their triggers match.
 
 Then work through the 10 steps sequentially — each step in [SKILL.md](SKILL.md) translates one move from the article into a concrete Hermes configuration or tool invocation. The canonical output is a profile-bound cron job with `goal_judge` as the grader and a skill-update lifecycle.
 
