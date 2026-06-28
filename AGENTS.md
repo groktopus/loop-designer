@@ -11,11 +11,11 @@ This skill distills Alex (@de1lymoon)'s 10-step roadmap into concrete Hermes Age
 | 1 | Agent is a loop | /goal loops via goal_judge |
 | 2 | Harness first | Dedicated profile with tool-config pruning |
 | 3 | System improves, not model | Memory + skills compound across runs |
-| 4 | Independent grader | goal_judge + kanban decomposition |
+| 4 | Independent grader | goal_judge + kanban tasks with acceptance criteria |
 | 5 | Maker/checker split | delegate_task verifier subagent |
-| 6 | Timer, then cloud | cronjob seeds kanban on 60s tick |
+| 6 | Timer, then cloud | profile-created cronjob seeds kanban on 60s tick |
 | 7 | Compose with workflows | delegate_task batch + kanban deps |
-| 8 | Memory | Memory provider + state log + memory tool |
+| 8 | Memory | State log + durable memory + skills |
 | 9 | Distill into skills | skill_manage patch-on-fail lifecycle |
 | 10 | Fail safe | Restricted profile + enabled_toolsets + repeat cap |
 
